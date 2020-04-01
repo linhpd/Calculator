@@ -1,0 +1,7 @@
+<resources xmlns:style="http://schemas.android.com/apk/res-auto">
+    <string name="app_name">My Application</string>
+    <string name="btn_mu2"> x&#178;</string>
+    <string name="btn_div"> &#247;</string>
+    <string name="btn_sup1">&#185;/&#120;</string>
+    <string name="btn_squ">&#178;&#8730;x</string>
+</resources>
