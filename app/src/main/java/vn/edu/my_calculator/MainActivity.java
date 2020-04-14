@@ -6,18 +6,19 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.lang.Integer;
 import java.lang.String;
 
 
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.lang.Double;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,19 +36,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnNumber8;
     private Button btnNumber9;
 
-    private Button btnCong;
-    private Button btnTru;
-    private Button btnNhan;
-    private Button btnChia;
-
     private Button btnPoint;
-    private Button btnResult;
-    private Button btnClearNumber;
     private Button btnClearAll;
     private Button btnDelete;
 
-    int a = 0, b = 0, result = 0;
-    char c;
+    private Spinner spinner1;
+    private Spinner spinner2;
+
+
+
+    String[] country = {"USA-Dollar","VN-Dong","Eng-Pound","Euro-Euro"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +53,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initWidget();
         setEventClickViews();
+
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),country[position] , Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ArrayAdapter sp1 = new ArrayAdapter(this,android.R.layout.simple_spinner_item,country);
+        sp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(sp1);
+
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),country[position] , Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ArrayAdapter sp2 = new ArrayAdapter(this,android.R.layout.simple_spinner_item,country);
+        sp2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner2.setAdapter(sp2);
+
     }
 
     public void initWidget(){
@@ -72,16 +103,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnNumber8 = findViewById(R.id.btn_num8);
         btnNumber9 = findViewById(R.id.btn_num9);
 
-        btnCong = findViewById(R.id.btn_cong);
-        btnTru = findViewById(R.id.btn_tru);
-        btnNhan = findViewById(R.id.btn_nhan);
-        btnChia = findViewById(R.id.btn_chia);
 
         btnPoint = findViewById(R.id.btn_point);
-        btnResult = findViewById(R.id.btn_result);
-        btnClearNumber = findViewById(R.id.btn_clearNumber);
         btnClearAll = findViewById(R.id.btn_clearAll);
         btnDelete = findViewById(R.id.btn_delete);
+
+        spinner1 = findViewById(R.id.spinner1);
+        spinner2 = findViewById(R.id.spinner2);
     }
 
     public void setEventClickViews(){
@@ -95,115 +123,128 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnNumber7.setOnClickListener(this);
         btnNumber8.setOnClickListener(this);
         btnNumber9.setOnClickListener(this);
-        btnCong.setOnClickListener(this);
-        btnTru.setOnClickListener(this);
-        btnNhan.setOnClickListener(this);
-        btnChia.setOnClickListener(this);
         btnPoint.setOnClickListener(this);
-        btnResult.setOnClickListener(this);
-        btnClearNumber.setOnClickListener(this);
         btnClearAll.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
     }
 
-/* public int returnResult(String a){
-     int temp = 0;
-     if (a.contains(".")){
-         String[] output = a.split("\\.");
-         int b = Integer.parseInt(output[0]);
-         int c = Integer.parseInt(output[1]);
-         temp = b + c;
-     }
-     if (a.contains("-")){
-         String[] output = a.split("-");
-         int b = Integer.parseInt(output[0]);
-         int c = Integer.parseInt(output[1]);
-         temp = b - c;
-     }
-     if (a.contains("x")){
-         String[] output = a.split("x");
-         int b = Integer.parseInt(output[0]);
-         int c = Integer.parseInt(output[1]);
-         temp = b * c;
-     }
-     if (a.contains("/")){
-         String[] output = a.split("/");
-         int b = Integer.parseInt(output[0]);
-         int c = Integer.parseInt(output[1]);
-         temp = b / c;
-     }
-     return temp;
- }*/
+    void convert() {
+        double temp = Double.parseDouble(edtNumber.getText().toString());
+        if (spinner1.getSelectedItem().equals("USA-Dollar")) {
+            if (spinner2.getSelectedItem().equals("USA-Dollar")) {
+                txtResult.setText(edtNumber.getText().toString());
+            }
+            if (spinner2.getSelectedItem().equals("VN-Dong")) {
+                temp = temp * 23000;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("Eng-Pound")) {
+                temp = temp * 0.8;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("Euro-Euro")) {
+                temp = temp * 0.9;
+                txtResult.setText(String.valueOf(temp));
+            }
+        }
+        else if (spinner1.getSelectedItem().equals("VN-Dong")) {
+            if (spinner2.getSelectedItem().equals("VN-Dong")) {
+                txtResult.setText(edtNumber.getText().toString());
+            }
+            if (spinner2.getSelectedItem().equals("USA-Dollar")) {
+                temp = temp / 23000;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("Eng-Pound")) {
+                temp = temp / 30000;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("Euro-Euro")) {
+                temp = temp / 25000;
+                txtResult.setText(String.valueOf(temp));
+            }
+        }
+        else if (spinner1.getSelectedItem().equals("Eng-Pound")) {
+            if (spinner2.getSelectedItem().equals("Eng-Pound")) {
+                txtResult.setText(edtNumber.getText().toString());
+            }
+            if (spinner2.getSelectedItem().equals("VN-Dong")) {
+                temp = temp * 30000;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("USA-Dollar")) {
+                temp = temp / 0.8;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("Euro-Euro")) {
+                temp = temp * 1.13;
+                txtResult.setText(String.valueOf(temp));
+            }
+        }
+        else if (spinner1.getSelectedItem().equals("Euro-Euro")) {
+            if (spinner2.getSelectedItem().equals("Euro-Euro")) {
+                txtResult.setText(edtNumber.getText().toString());
+            }
+            if (spinner2.getSelectedItem().equals("VN-Dong")) {
+                temp = temp * 25000;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("Eng-Pound")) {
+                temp = temp / 1.13;
+                txtResult.setText(String.valueOf(temp));
+            }
+            if (spinner2.getSelectedItem().equals("USA-Dollar")) {
+                temp = temp / 0.9;
+                txtResult.setText(String.valueOf(temp));
+            }
+        }
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_num0:
                 edtNumber.append("0");
+                convert();
                 break;
             case R.id.btn_num1:
                 edtNumber.append("1");
+                convert();
                 break;
             case R.id.btn_num2:
                 edtNumber.append("2");
+                convert();
                 break;
             case R.id.btn_num3:
                 edtNumber.append("3");
+                convert();
                 break;
             case R.id.btn_num4:
                 edtNumber.append("4");
+                convert();
                 break;
             case R.id.btn_num5:
                 edtNumber.append("5");
+                convert();
                 break;
             case R.id.btn_num6:
                 edtNumber.append("6");
+                convert();
                 break;
             case R.id.btn_num7:
                 edtNumber.append("7");
+                convert();
                 break;
             case R.id.btn_num8:
                 edtNumber.append("8");
+                convert();
                 break;
             case R.id.btn_num9:
                 edtNumber.append("9");
-                break;
-            case R.id.btn_cong:
-                a = a = Integer.parseInt(edtNumber.getText().toString());
-                c = '+';
-                edtNumber.append("+");
-                edtNumber.setText("");
-                break;
-            case R.id.btn_tru:
-                a = Integer.parseInt(edtNumber.getText().toString());
-                c = '-';
-                edtNumber.append("-");
-                edtNumber.setText("");
-                break;
-            case R.id.btn_nhan:
-                a = Integer.parseInt(edtNumber.getText().toString());
-                c = 'x';
-                edtNumber.append("x");
-                edtNumber.setText("");
-                break;
-            case R.id.btn_chia:
-                a = Integer.parseInt(edtNumber.getText().toString());
-                c = '/';
-                edtNumber.append("/");
-                edtNumber.setText("");
+                convert();
                 break;
             case R.id.btn_point:
                 edtNumber.append(".");
-                break;
-            case R.id.btn_result:
-                b = Integer.parseInt(edtNumber.getText().toString());
-                if (c == '+') result = a + b;
-                if (c == '-') result = a - b;
-                if (c == 'x') result = a * b;
-                if (c == '/') result = a / b;
-                txtResult.setText(result + "");
-                break;
-            case R.id.btn_clearNumber:
                 break;
             case R.id.btn_clearAll:
                 edtNumber.setText("");
